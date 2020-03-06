@@ -83,11 +83,16 @@ div.enemy {
 
 
     <script>
+        //POSICION INICIAL DE FALCON 
         var falcon_pos = {
             left: 575,
             top: 700
         };
+        //VARAIBLE QUE LLEVA PUNTAJE
+        var puntos =0;
+        var puntajefinal = 0;
 
+        //ARREGLO DE MISILES
         var missiles = [];
 
         var enemies = [
@@ -158,6 +163,9 @@ div.enemy {
             }
         }
 
+
+
+
         //CHOCAR DISPARO
         function contactoDisparo() {
             for (var alien = 0; alien < enemies.length; alien++) {
@@ -168,11 +176,66 @@ div.enemy {
                         missiles[missile].top <= (enemies[alien].top + 50)  &&
                         missiles[missile].top >= enemies[alien].top
                     ) {
+                        puntos++;
                         enemies.splice(alien, 1);
                         missiles.splice(missile, 1);
                     }
                 }
             }
+                        puntajeClass.asigna(puntos);
+        }
+
+    function actualizar(){location.reload(true);}
+
+        //CLASE ABSTRACTA PARA CALCULAR PUNTAJE Y ASOCIACION UNO A UNO 
+
+           class puntajeClass {
+             static asigna(score) {
+               this.sc = score;
+             }
+             static calculaScore() {
+               return alert('Excelente Trabajo Falcon , Vuelve a la Base !!, \n Puntaje: '+this.sc);
+             }
+           }
+
+//Asociacion Muchos a Muchos
+class Pelotones {
+  constructor(nombre) {
+    this.nombrepeloton = nombre;
+    this.pilotos = [];
+  }
+}
+class PilotosFalcons {
+  constructor(nombre) {
+    this.nombre = nombre;
+  }
+}
+const Peloton1 = new Pelotones("Halcones Negros");
+const pTach = new PilotosFalcons("Tachala");
+const pAnak = new PilotosFalcons("Anakin");
+Peloton1.pilotos = [pAnak, pTach];
+const Peloton2 = new Pelotones("Fenix");
+const pFranc = new PilotosFalcons("Franchesco");
+const pHan = new PilotosFalcons("HanSolo");
+Peloton2.pilotos = [pFranc, pHan];
+
+console.log("Peloton 1: "+Peloton1.nombrepeloton);
+
+for (var i=0; i<Peloton1.pilotos.length; i++) { 
+    console.log("Piloto: "+Peloton1.pilotos[i].nombre); 
+}
+
+   console.log("Peloton 2: "+Peloton2.nombrepeloton);
+
+for (var i=0; i<Peloton2.pilotos.length; i++) { 
+    console.log("Piloto: "+Peloton2.pilotos[i].nombre);
+}
+
+    //FUNICION PARA REFRESCAR
+        var int=self.setInterval("refresh()",24100);
+        function refresh()
+        {
+            location.reload(true);
         }
 
       setInterval(() => moveMissiles(), 50);
@@ -180,6 +243,7 @@ div.enemy {
       setInterval(() => moveEnemies(), 50);
       setInterval(() => aliens(), 50);
       setInterval(() => contactoDisparo(), 50);
+      setInterval(() => puntajeClass.calculaScore(),24000);
 
 
     //MOVER NAVE 
@@ -197,7 +261,7 @@ div.enemy {
                     left: falcon_pos.left + 20,
                     top: falcon_pos.top - 20 
                 });
-                disparaMisil()
+                disparaMisil();
           break;
         }
         falcon();
@@ -241,5 +305,6 @@ div.enemy {
 
     </script>
 </body>
- <footer>Copyright &copy;2020 Pichardo Vilchis Luis Fernando</footer>
+ <footer>Copyright &copy;2020 Pichardo Vilchis Luis Fernando
+ </footer>
 </html>
