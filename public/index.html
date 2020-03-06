@@ -6,7 +6,7 @@
 <body>
     <div id="background">
         <!--<div id="falcon_nav"></div>-->
-        <div id="missiles"></div>
+        <div ontouchend="disparaMisil()" id="missiles"></div>
         <div id="enemies"></div>
         <figura-falcon id="falcon"></figura-falcon>
     </div>
@@ -32,16 +32,7 @@ div#background {
     position: absolute;
 }
 
-/*
-div#falcon_nav {
-    width: 50px;
-    height: 50px;
-    background-image: url('resources/falcon.png');
-    position: absolute;
-    left: 575px;
-    top: 700px; 
-}
-*/
+
 figura-falcon {
     width: 50px;
     height: 50px;
@@ -203,7 +194,7 @@ div.enemy {
 
 
       //VERSION MOVIL
-/*
+
       let iniciaX = null;
       let iniciaY = null;
       document.addEventListener('touchstart', evt => {
@@ -222,9 +213,9 @@ div.enemy {
           if (Math.abs(difX) + Math.abs(difY) > 150) {
             if (Math.abs(difX) > Math.abs(difY)) {
               if (difX > 70) {
-                falcon_nav.left = falcon_nav.left + 10;
+                falcon_pos.left = falcon_nav.left + 10;
               } else {
-                falcon_nav.left = falcon_nav.left - 10;
+                falcon_pos.left = falcon_nav.left - 10;
               }
             }
             // Reinicia valores.
@@ -233,7 +224,9 @@ div.enemy {
           }
         }
       });
-*/
+
+
+
 
     </script>
 </body>
