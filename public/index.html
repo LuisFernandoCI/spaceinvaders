@@ -1,65 +1,241 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ejemplo de Commit</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.10.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.10.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.10.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.10.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.10.0/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+<html lang="en">
+<head>
+    <title>Space Invaders</title>
+</head>
+<body>
+    <div id="background">
+        <!--<div id="falcon_nav"></div>-->
+        <div id="missiles"></div>
+        <div id="enemies"></div>
+        <figura-falcon id="falcon"></figura-falcon>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+
+<style type="text/css">
+      body {
+        /* Formato para Videojuego */
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: black;
+      }
+
+
+div#background {
+    width: 1400px;
+    height: 800px;
+    background-image: url(https://i.ibb.co/28Hb8nL/fondo.jpg);
+    position: absolute;
+}
+
+/*
+div#falcon_nav {
+    width: 50px;
+    height: 50px;
+    background-image: url('resources/falcon.png');
+    position: absolute;
+    left: 575px;
+    top: 700px; 
+}
+*/
+figura-falcon {
+    width: 50px;
+    height: 50px;
+    background-image: url(https://i.ibb.co/cLnJ0MP/falcon.png);
+    position: absolute;
+    left: 575px;
+    top: 700px; 
+}
+
+
+div#missiles {
+    width: 1200px;
+    height: 800px;
+    position: absolute;
+}
+
+div.missile1 {
+    width: 10px;
+    height: 28px;
+    background-image: url(https://i.ibb.co/DLm0m3C/rocket.png);
+    position: absolute;
+}
+
+div#enemies {
+    width: 1200px;
+    height: 800px;
+    position: absolute;
+}
+
+div.enemy {
+    width: 50px;
+    height: 50px;
+    background-image: url(https://i.ibb.co/qRRq5xs/Alien1.png);
+    position: absolute;
+}
+</style>
+
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        var falcon_pos = {
+            left: 575,
+            top: 700
+        };
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        var missiles = [];
+
+        var enemies = [
+            { left: 200, top: 100 },
+            { left: 300, top: 100 },
+            { left: 400, top: 100 },
+            { left: 500, top: 100 },
+            { left: 600, top: 100 },
+            { left: 700, top: 100 },
+            { left: 800, top: 100 },
+            { left: 900, top: 100 },
+            { left: 200, top: 175 },
+            { left: 300, top: 175 },
+            { left: 400, top: 175 },
+            { left: 500, top: 175 },
+            { left: 600, top: 175 },
+            { left: 700, top: 175 },
+            { left: 800, top: 175 },
+            { left: 900, top: 175 }
+        ];
+        
+        //POSICION INICIAL NAVE
+
+        customElements.define("figura-falcon", class extends HTMLElement {
+        connectedCallback() {
+          this.x = 0;
+        }
+        posicion() {
+          this.style.left = figura-falcon.left + 'px';
+          this.style.top = figura-falcon.top + 'px';
         }
       });
+
+
+        function falcon() {
+            document.getElementById('falcon').style.left = falcon_pos.left + 'px';
+            document.getElementById('falcon').style.top = falcon_pos.top + 'px';
+        }
+
+
+        //FUNCION DISPARA MISIL
+        function disparaMisil() {
+            document.getElementById('missiles').innerHTML = ""
+            for(var i = 0 ; i < missiles.length ; i++ ) {
+                document.getElementById('missiles').innerHTML += `<div class='missile1' style='left:${missiles[i].left}px; top:${missiles[i].top}px'></div>`;
+            }
+        }
+
+        //FUNCION MOVER MISILES
+        function moveMissiles() {
+            for(var i = 0 ; i < missiles.length ; i++ ) {
+                missiles[i].top = missiles[i].top - 8
+            }
+        }
+
+        //POSICION INICIAL DE ENEMIGOS
+        function aliens() {
+            document.getElementById('enemies').innerHTML = ""
+            for(var i = 0 ; i < enemies.length ; i++ ) {
+                document.getElementById('enemies').innerHTML += `<div class='enemy' style='left:${enemies[i].left}px; top:${enemies[i].top}px'></div>`;
+            }
+        }
+
+        //MOVER ENEMIGOS
+        function moveEnemies() {
+            for(var i = 0 ; i < enemies.length ; i++ ) {
+                enemies[i].top = enemies[i].top + 1;
+            }
+        }
+
+        //CHOCAR DISPARO
+        function contactoDisparo() {
+            for (var alien = 0; alien < enemies.length; alien++) {
+                for (var missile = 0; missile < missiles.length; missile++) {
+                    if ( 
+                        missiles[missile].left >= enemies[alien].left  &&
+                        missiles[missile].left <= (enemies[alien].left + 50)  &&
+                        missiles[missile].top <= (enemies[alien].top + 50)  &&
+                        missiles[missile].top >= enemies[alien].top
+                    ) {
+                        enemies.splice(alien, 1);
+                        missiles.splice(missile, 1);
+                    }
+                }
+            }
+        }
+
+      setInterval(() => moveMissiles(), 50);
+      setInterval(() => disparaMisil(), 50);
+      setInterval(() => moveEnemies(), 50);
+      setInterval(() => aliens(), 50);
+      setInterval(() => contactoDisparo(), 50);
+
+
+    //MOVER NAVE 
+      document.addEventListener("keydown", evt => {
+        switch (evt.key) {
+          case "ArrowLeft":
+            falcon_pos.left = falcon_pos.left - 10;
+            break;
+          case "ArrowRight":
+            falcon_pos.left = falcon_pos.left + 10;
+            break;          
+          case " ":
+          // Barra de Espacios para Disparar
+                missiles.push({
+                    left: falcon_pos.left + 20,
+                    top: falcon_pos.top - 20 
+                });
+                disparaMisil()
+          break;
+        }
+        falcon();
+      });
+
+
+      //VERSION MOVIL
+/*
+      let iniciaX = null;
+      let iniciaY = null;
+      document.addEventListener('touchstart', evt => {
+        const toquInicial = evt.touches[0];
+        iniciaX = toquInicial.clientX;
+        iniciaY = toquInicial.clientY;
+      });
+      document.addEventListener('touchmove', evt => {
+        if (iniciaX && iniciaY) {
+          const mueve = evt.touches[0];
+          var mueveX = mueve.clientX;
+          var mueveY = mueve.clientY;
+          var difX = mueveX - iniciaX;
+          var difY = mueveY - iniciaY;
+          // Checa que el movimiento no sea muy corto,
+          if (Math.abs(difX) + Math.abs(difY) > 150) {
+            if (Math.abs(difX) > Math.abs(difY)) {
+              if (difX > 70) {
+                falcon_nav.left = falcon_nav.left + 10;
+              } else {
+                falcon_nav.left = falcon_nav.left - 10;
+              }
+            }
+            // Reinicia valores.
+            iniciaX = null;
+            iniciaY = null;
+          }
+        }
+      });
+*/
+
     </script>
-  </body>
+</body>
+ <footer>Copyright &copy;2020 Pichardo Vilchis Luis Fernando</footer>
 </html>
